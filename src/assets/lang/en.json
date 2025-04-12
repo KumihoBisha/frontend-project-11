@@ -1,5 +1,8 @@
 {
   "label.submit_button": "Add",
-  "error.invalid_url": "Invalid URL",
-  "error.rss_already_added": "RSS already exists"
+  "label.preview_button": "Preview",
+  "label.open_full": "Read full",
+  "error.rss_already_added": "RSS already exists",
+  "error.no_valid_rss": "No valid RSS in this resource",
+  "error.network_error": "Network error"
 }

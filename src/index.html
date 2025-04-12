@@ -6,24 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RSS агрегатор</title>
 </head>
-
-<body>
-  <div id="formContainer" class="container py-4 px-3 mx-auto">
-    <div class="row">
-      <h1>RSS агрегатор</h1>
-    </div>
-    <form id="add_rss_form">
-      <div class="row">
-        <div class="col-9">
-          <input type="text" class="form-control" required id="rssLinkInput" placeholder="Введите ссылку на RSS">
-        </div>
-        <div class="col">
-          <button class="btn btn-primary w-100" type="submit">Добавить</button>
+  <body>
+    <!-- Modal Window-->
+    <div class="modal fade" id="rssItemModal" tabindex="-1" aria-labelledby="rssItemModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="rssItemModalLabel"></h5>
+            <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p id="rssItemModalContent"></p>
+          </div>
+          <div class="modal-footer">
+            <a class="btn btn-primary" id="rssModalItemOpenButton"></a>
+          </div>
         </div>
       </div>
-      <p class="error text-danger"></p>
-    </form>
-  </div>
-  <div id="news"></div>
-</body>
-</html>
+    </div>
+  
+    <!-- Form -->
+    <div id="formContainer" class="container py-4 px-3 mx-auto">
+      <div class="row">
+        <h1>RSS агрегатор</h1>
+      </div>
+      <form id="add_rss_form">
+        <div class="row">
+          <div class="col-9">
+            <input type="text" class="form-control" required id="rssLinkInput" placeholder="Введите ссылку на RSS">
+          </div>
+          <div class="col">
+            <button class="btn btn-primary w-100" type="submit">Добавить</button>
+          </div>
+        </div>
+        <p class="error text-danger"></p>
+      </form>
+    </div>
+  
+    <!-- News block -->
+    <div id="news"></div>
+  </body>
+  
+  </html>
