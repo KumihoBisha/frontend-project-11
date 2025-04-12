@@ -8,11 +8,9 @@
 </head>
 
 <body>
-  <div class="container py-4 px-3 mx-auto">
+  <div id="formContainer" class="container py-4 px-3 mx-auto">
     <div class="row">
-      <div class="col">
-        <h1>RSS агрегатор</h1>
-      </div>
+      <h1>RSS агрегатор</h1>
     </div>
     <form id="add_rss_form">
       <div class="row">
@@ -20,10 +18,12 @@
           <input type="text" class="form-control" required id="rssLinkInput" placeholder="Введите ссылку на RSS">
         </div>
         <div class="col">
-          <button class="btn btn-primary" type="submit">Добавить</button>
+          <button class="btn btn-primary w-100" type="submit">Добавить</button>
         </div>
       </div>
+      <p class="error text-danger"></p>
     </form>
   </div>
+  <div id="news"></div>
 </body>
 </html>

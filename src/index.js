@@ -1,16 +1,13 @@
-import { object, string, setLocale } from 'yup';
+import { object, string } from 'yup';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import initializeFormState from './formView.js';
+import initializeState from './state.js';
 import './scss/styles.scss';
 import en from './assets/lang/en.json';
 import ru from './assets/lang/ru.json';
+import getRss from './api.js';
 
 const app = () => {
-  const appState = {
-    feedList: [],
-  };
-
   i18next.use(LanguageDetector).init({
     supportedLngs: ['ru', 'en'],
     fallbackLng: 'en',
@@ -24,34 +21,41 @@ const app = () => {
     },
   });
 
-  setLocale({
-    string: {
-      url: () => 'invalid_url',
+  const form = document.getElementById('add_rss_form');
+  const news = document.getElementById('news');
+
+  const initialState = {
+    feeds: {},
+    form: {
+      error: '',
     },
-  });
+    isLoading: false,
+  };
+
+  const appState = initializeState(initialState, form, news);
 
   const schema = object().shape({
     link: string()
-      .url()
-      .test('is-unique', () => 'rss_already_added', (value) => !appState.feedList.includes(value)),
+      .url('error.invalid_url')
+      .test('is-unique', () => 'error.rss_already_added', (value) => !appState.feeds[value]),
   });
-
-  const form = document.getElementById('add_rss_form');
-  const formState = initializeFormState({ error: '' }, form);
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
     const inputData = event.target[0].value;
 
+    appState.isLoading = true;
+
     schema.validate({ link: inputData })
       .then((result) => {
-        formState.error = '';
-        appState.feedList.push(result.link);
-
-        console.log(appState.feedList);
+        appState.form.error = '';
+        return getRss(result.link).then((channel) => appState.feeds[result.link] === channel);
       })
-      .catch((error) => { formState.error = error.message; });
+      .catch((error) => {
+        appState.form.error = error.message;
+      })
+      .finally(() => appState.isLoading === false);
 
     return false;
   });

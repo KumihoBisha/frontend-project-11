@@ -1,4 +1,5 @@
 {
-  "invalid_url": "Invalid URL",
-  "rss_already_added": "RSS already exists"
+  "label.submit_button": "Add",
+  "error.invalid_url": "Invalid URL",
+  "error.rss_already_added": "RSS already exists"
 }
