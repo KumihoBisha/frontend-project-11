@@ -1,8 +1,8 @@
-const path = require('path');
-const autoprefixer = require('autoprefixer');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import autoprefixer from 'autoprefixer';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+export default {
   entry: './src/index.js',
   mode: process.env.NODE_ENV || 'development',
   plugins: [
@@ -17,7 +17,7 @@ module.exports = {
   },
   output: {
     filename: 'script.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve('.', 'dist'),
     clean: true,
   },
   module: {

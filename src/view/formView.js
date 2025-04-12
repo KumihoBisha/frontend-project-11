@@ -35,24 +35,17 @@ const updateIsLoading = (form, isLoading) => {
   }
 };
 
-const initializeForm = (form) => {
-  const initialState = {
-    message: {},
-    isLoading: false,
-  };
-
-  return onChange(initialState, (path, value) => {
-    switch (path) {
-      case 'message':
-        updateForm(form, value);
-        break;
-      case 'isLoading':
-        updateIsLoading(form, value);
-        break;
-      default:
-        console.error(`Unexpected key ${path}`);
-    }
-  });
-};
+const initializeForm = (form, initialState) => onChange(initialState, (path, value) => {
+  switch (path) {
+    case 'message':
+      updateForm(form, value);
+      break;
+    case 'isLoading':
+      updateIsLoading(form, value);
+      break;
+    default:
+      console.error(`Unexpected key ${path}`);
+  }
+});
 
 export default initializeForm;

@@ -1,9 +1,0 @@
-{
-  "label.submit_button": "Add",
-  "label.preview_button": "Preview",
-  "label.open_full": "Read full",
-  "success": "RSS successfully loaded",
-  "error.rss_already_added": "RSS already exists",
-  "error.no_valid_rss": "No valid RSS in this resource",
-  "error.network_error": "Network error"
-}

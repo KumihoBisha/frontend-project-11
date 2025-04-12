@@ -2,25 +2,24 @@ import axios from 'axios';
 
 const DOM_PARSER = new DOMParser();
 
-const getTextFromTag = (tag) => tag.innerHTML.replace('<![CDATA[', '').replace(']]>', '');
-
 const parseRss = (data) => {
-  const rss = DOM_PARSER.parseFromString(data, 'application/xml')
-    .getElementsByTagName('rss')[0];
-  if (!rss) throw new Error('error.no_valid_rss');
+  const dom = DOM_PARSER.parseFromString(data, 'text/xml');
+
+  const rss = dom.getElementsByTagName('rss')[0];
+  if (!rss) return null;
 
   const channel = rss.getElementsByTagName('channel')[0];
-  if (!channel) throw new Error('error.no_valid_rss');
+  if (!channel) return null;
 
-  const channelTitle = getTextFromTag(channel.getElementsByTagName('title')[0]);
-  const channelDescription = getTextFromTag(channel.getElementsByTagName('description')[0]);
+  const channelTitle = channel.getElementsByTagName('title')[0].childNodes[0].nodeValue;
+  const channelDescription = channel.getElementsByTagName('description')[0].childNodes[0].nodeValue;
 
   const items = Array.from(channel.getElementsByTagName('item')).map((item) => {
-    const itemGuid = getTextFromTag(item.getElementsByTagName('guid')[0]);
-    const itemTitle = getTextFromTag(item.getElementsByTagName('title')[0]);
-    const itemDescription = getTextFromTag(item.getElementsByTagName('description')[0]);
-    const itemLink = getTextFromTag(item.getElementsByTagName('link')[0]);
-    const pubDate = Date.parse(getTextFromTag(item.getElementsByTagName('pubDate')[0]));
+    const itemGuid = item.getElementsByTagName('guid')[0].childNodes[0].nodeValue;
+    const itemTitle = item.getElementsByTagName('title')[0].childNodes[0].nodeValue;
+    const itemDescription = item.getElementsByTagName('description')[0].childNodes[0].nodeValue;
+    const itemLink = item.getElementsByTagName('link')[0].childNodes[0].nodeValue;
+    const pubDate = Date.parse(item.getElementsByTagName('pubDate')[0].childNodes[0].nodeValue);
 
     return {
       guid: itemGuid,
@@ -40,11 +39,10 @@ const parseRss = (data) => {
 
 const getRss = (url) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
-  .then((response) => {
-    console.log(response);
-    if (response.status !== 200 || response.data.status.http_code !== 200) throw new Error('error.network_error');
-
-    return parseRss(response.data.contents);
-  });
+  .catch((err) => {
+    console.error(err);
+    throw new Error('error.network_error');
+  })
+  .then((response) => parseRss(response.data.contents));
 
 export default getRss;
