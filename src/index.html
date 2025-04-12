@@ -14,15 +14,16 @@
         <h1>RSS агрегатор</h1>
       </div>
     </div>
-    <div class="row">
-      <div class="col-9">
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Введите ссылку на RSS">
+    <form id="add_rss_form">
+      <div class="row">
+        <div class="col-9">
+          <input type="text" class="form-control" required id="rssLinkInput" placeholder="Введите ссылку на RSS">
+        </div>
+        <div class="col">
+          <button class="btn btn-primary" type="submit">Добавить</button>
+        </div>
       </div>
-      <div class="col">
-        <button class="btn btn-primary">Добавить</button>
-      </div>
-    </div>
+    </form>
   </div>
 </body>
-
 </html>
