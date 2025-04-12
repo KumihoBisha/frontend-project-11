@@ -1,16 +1,25 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 
-const updateForm = (form, error) => {
-  const input = form.getElementsByTagName('input')[0];
-  const errorMessage = form.getElementsByClassName('error')[0];
+const updateForm = (form, message) => {
+  const inputElement = form.getElementsByTagName('input')[0];
+  const messageElement = form.getElementsByTagName('p')[0];
 
-  if (error) {
-    input.classList.add('is-invalid');
-    errorMessage.innerText = i18next.t(error);
+  if (message) {
+    messageElement.innerText = i18next.t(message.textId);
+
+    if (message.isError) {
+      inputElement.classList.add('is-invalid');
+      messageElement.classList.remove('text-success');
+      messageElement.classList.add('text-danger');
+    } else {
+      inputElement.classList.remove('is-invalid');
+      messageElement.classList.remove('text-danger');
+      messageElement.classList.add('text-success');
+    }
   } else {
-    input.classList.remove('is-invalid');
-    errorMessage.innerText = '';
+    inputElement.classList.remove('is-invalid');
+    messageElement.innerText = '';
   }
 };
 
@@ -28,13 +37,13 @@ const updateIsLoading = (form, isLoading) => {
 
 const initializeForm = (form) => {
   const initialState = {
-    error: '',
+    message: {},
     isLoading: false,
   };
 
   return onChange(initialState, (path, value) => {
     switch (path) {
-      case 'error':
+      case 'message':
         updateForm(form, value);
         break;
       case 'isLoading':

@@ -41,7 +41,9 @@ const parseRss = (data) => {
 const getRss = (url) => axios
   .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
   .then((response) => {
-    if (response.status !== 200) throw new Error('error.error_connecting_to_rss');
+    console.log(response);
+    if (response.status !== 200 || response.data.status.http_code !== 200) throw new Error('error.network_error');
+
     return parseRss(response.data.contents);
   });
 

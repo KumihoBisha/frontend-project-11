@@ -69,14 +69,18 @@ const app = () => {
     formState.isLoading = true;
 
     schema.validate({ link: inputData })
-      .then((result) => {
-        formState.error = '';
-        return getRss(result.link).then((channel) => newsState[result.link] === channel);
+      .then((result) => getRss(result.link).then((channel) => {
+        newsState[result.link] = channel;
+      }))
+      .then(() => {
+        formState.message = { isError: false, textId: 'success' };
       })
       .catch((error) => {
-        formState.error = error.message;
+        formState.message = { isError: true, textId: error.message };
       })
-      .finally(() => formState.isLoading === false);
+      .finally(() => {
+        formState.isLoading = false;
+      });
 
     return false;
   });
