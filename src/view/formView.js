@@ -1,30 +1,27 @@
-import onChange from 'on-change';
 import i18next from 'i18next';
 
-const updateForm = (form, message) => {
-  const inputElement = form.getElementsByTagName('input')[0];
-  const messageElement = form.getElementsByTagName('p')[0];
+export const updateFormMessage = (form, message) => {
+  const messageElement = form.querySelector('p');
+  messageElement.innerText = message ? i18next.t(message) : '';
+};
 
-  if (message) {
-    messageElement.innerText = i18next.t(message.textId);
+export const updateErrorStatus = (form, isError) => {
+  const inputElement = form.querySelector('input');
+  const messageElement = form.querySelector('p');
 
-    if (message.isError) {
-      inputElement.classList.add('is-invalid');
-      messageElement.classList.remove('text-success');
-      messageElement.classList.add('text-danger');
-    } else {
-      inputElement.classList.remove('is-invalid');
-      messageElement.classList.remove('text-danger');
-      messageElement.classList.add('text-success');
-    }
+  if (isError) {
+    inputElement.classList.add('is-invalid');
+    messageElement.classList.remove('text-success');
+    messageElement.classList.add('text-danger');
   } else {
     inputElement.classList.remove('is-invalid');
-    messageElement.innerText = '';
+    messageElement.classList.remove('text-danger');
+    messageElement.classList.add('text-success');
   }
 };
 
-const updateIsLoading = (form, isLoading) => {
-  const submitButton = form.getElementsByTagName('button')[0];
+export const updateIsLoading = (form, isLoading) => {
+  const submitButton = form.querySelector('button');
 
   if (isLoading) {
     submitButton.disabled = true;
@@ -34,18 +31,3 @@ const updateIsLoading = (form, isLoading) => {
     submitButton.innerHTML = i18next.t('label.submit_button');
   }
 };
-
-const initializeForm = (form, initialState) => onChange(initialState, (path, value) => {
-  switch (path) {
-    case 'message':
-      updateForm(form, value);
-      break;
-    case 'isLoading':
-      updateIsLoading(form, value);
-      break;
-    default:
-      console.error(`Unexpected key ${path}`);
-  }
-});
-
-export default initializeForm;

@@ -11,12 +11,12 @@ const visitedItemsState = onChange({}, (path, value) => {
   }
 });
 
-const createFeedElement = (id, title, description) => {
-  const feedElement = document.createElement('div');
-  feedElement.id = id;
-  feedElement.classList.add('container', 'py-4', 'px-3', 'mx-auto');
+const createChannelElement = (id, title, description) => {
+  const channelElement = document.createElement('div');
+  channelElement.id = id;
+  channelElement.classList.add('container', 'py-4', 'px-3', 'mx-auto');
 
-  feedElement.innerHTML = `
+  channelElement.innerHTML = `
      <div class="row">
        <h4>${title}</h4>
        <p class="fw-light fst-italic">${description}</p>
@@ -24,10 +24,10 @@ const createFeedElement = (id, title, description) => {
      </div>
    `;
 
-  return feedElement;
+  return channelElement;
 };
 
-const updateModal = (item) => {
+export const updateModal = (item) => {
   const rssModalHeaderElement = document.getElementById('rssItemModalLabel');
   rssModalHeaderElement.innerText = item.title;
 
@@ -74,42 +74,23 @@ const createFeedItemElement = (item) => {
   return itemElement;
 };
 
-const updateFeedItems = (feedItems, feedElement) => {
-  const compareItems = (a, b) => {
-    if (a.pubDate > b.pubDate) return 1;
-    if (a.pubDate < b.pubDate) return -1;
-    return 0;
-  };
-
-  const sortedItems = [...feedItems].sort(compareItems);
-
-  sortedItems.forEach((item) => {
+export const updateFeedItems = (channelItems) => {
+  channelItems.forEach((item) => {
     if (!document.getElementById(item.guid)) {
+      const channelElement = document.getElementById(item.channelUrl);
       const itemElement = createFeedItemElement(item);
-      feedElement.getElementsByClassName('items')[0].prepend(itemElement);
+
+      channelElement.querySelector('.items').prepend(itemElement);
     }
   });
 };
 
-const updateFeed = (feedUrl, feed, newsBlock) => {
-  let feedElement = document.getElementById(feedUrl);
-  if (!feedElement) {
-    feedElement = createFeedElement(feedUrl, feed.title, feed.description);
-    newsBlock.appendChild(feedElement);
-  }
-
-  updateFeedItems(feed.items, feedElement);
+export const updateRssChannels = (newsBlock, channels) => {
+  channels.forEach((channel) => {
+    let channelElement = document.getElementById(channel.url);
+    if (!channelElement) {
+      channelElement = createChannelElement(channel.url, channel.title, channel.description);
+      newsBlock.appendChild(channelElement);
+    }
+  });
 };
-
-const initializeNewsBlock = (newsBlock, initialState) => onChange(initialState, (path, value) => {
-  if (path.endsWith('items')) {
-    const feedUrl = path.replace('.items', '');
-    const feedElement = document.getElementById(feedUrl);
-
-    updateFeedItems(value, feedElement);
-  } else {
-    updateFeed(path, value, newsBlock);
-  }
-});
-
-export default initializeNewsBlock;
