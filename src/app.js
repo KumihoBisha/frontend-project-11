@@ -15,7 +15,7 @@ const launchUpdatingRss = (state) => {
           .then((response) => {
             const rss = parseRss(response);
             rss.items.forEach((newItem) => {
-              if (!state.items.some((currItem) => currItem.guid === newItem.guid)) {
+              if (!state.items.some((currItem) => currItem.id === newItem.id)) {
                 const item = newItem;
                 item.channelUrl = channel.url;
                 state.items.push(item);

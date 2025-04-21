@@ -43,7 +43,7 @@ export const updateModal = (item) => {
 
 const createFeedItemElement = (item) => {
   const itemElement = document.createElement('div');
-  itemElement.id = item.guid;
+  itemElement.id = item.id;
   itemElement.classList.add('item');
 
   const itemLinkElement = document.createElement('a');
@@ -59,7 +59,7 @@ const createFeedItemElement = (item) => {
   previewButton.setAttribute('data-bs-toggle', 'modal');
   previewButton.setAttribute('data-bs-target', '#rssItemModal');
   previewButton.addEventListener('click', () => {
-    visitedItemsState[item.guid] = true;
+    visitedItemsState[item.id] = true;
     updateModal(item);
   });
 
@@ -76,7 +76,7 @@ const createFeedItemElement = (item) => {
 
 export const updateFeedItems = (channelItems) => {
   channelItems.forEach((item) => {
-    if (!document.getElementById(item.guid)) {
+    if (!document.getElementById(item.id)) {
       const channelElement = document.getElementById(item.channelUrl);
       const itemElement = createFeedItemElement(item);
 

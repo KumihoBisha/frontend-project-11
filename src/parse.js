@@ -17,14 +17,15 @@ const parseRss = (data) => {
   };
 
   const items = Array.from(channelElement.getElementsByTagName('item')).map((item) => {
-    const itemGuid = item.querySelector('guid').textContent;
     const itemTitle = item.querySelector('title').textContent;
     const itemDescription = item.querySelector('description').textContent;
     const itemLink = item.querySelector('link').textContent;
     const pubDate = Date.parse(item.querySelector('pubDate').textContent);
 
+    const uniqueId = `${itemTitle}-${itemLink}-${pubDate}`;
+
     return {
-      guid: itemGuid,
+      id: uniqueId,
       title: itemTitle,
       description: itemDescription,
       link: itemLink,
