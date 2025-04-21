@@ -1,18 +1,20 @@
 import onChange from 'on-change';
-import { updateErrorStatus, updateFormMessage, updateIsLoading } from './formView.js';
+import { updateProcessState, updateFormMessage } from './formView.js';
 import { updateFeedItems, updateRssChannels } from './newsBlockView.js';
 
-export default (initialState, selectors) => {
+const selectors = {
+  formId: 'add_rss_form',
+  newsBlockId: 'news',
+};
+
+export default (initialState) => {
   const form = document.getElementById(selectors.formId);
   const newsBlock = document.getElementById(selectors.newsBlockId);
 
   const state = onChange(initialState, (path, value) => {
     switch (path) {
-      case 'isLoading':
-        updateIsLoading(form, value);
-        break;
-      case 'isError':
-        updateErrorStatus(form, value);
+      case 'processState':
+        updateProcessState(form, value);
         break;
       case 'formMessage':
         updateFormMessage(form, value);

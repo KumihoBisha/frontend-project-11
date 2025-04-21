@@ -5,29 +5,31 @@ export const updateFormMessage = (form, message) => {
   messageElement.innerText = message ? i18next.t(message) : '';
 };
 
-export const updateErrorStatus = (form, isError) => {
+export const updateProcessState = (form, processState) => {
   const inputElement = form.querySelector('input');
   const messageElement = form.querySelector('p');
-
-  if (isError) {
-    inputElement.classList.add('is-invalid');
-    messageElement.classList.remove('text-success');
-    messageElement.classList.add('text-danger');
-  } else {
-    inputElement.classList.remove('is-invalid');
-    messageElement.classList.remove('text-danger');
-    messageElement.classList.add('text-success');
-  }
-};
-
-export const updateIsLoading = (form, isLoading) => {
   const submitButton = form.querySelector('button');
 
-  if (isLoading) {
-    submitButton.disabled = true;
-    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
-  } else {
-    submitButton.disabled = false;
-    submitButton.innerHTML = i18next.t('label.submit_button');
+  inputElement.classList.remove('is-invalid');
+  messageElement.classList.remove('text-success', 'text-danger');
+  submitButton.disabled = false;
+  submitButton.innerHTML = i18next.t('label.submit_button');
+
+  switch (processState) {
+    case 'loading':
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+      break;
+    case 'failed':
+      inputElement.classList.add('is-invalid');
+      messageElement.classList.add('text-danger');
+      break;
+    case 'success':
+      messageElement.classList.add('text-success');
+      break;
+    case 'filling':
+      break;
+    default:
+      throw new Error(`Unknown process state: ${processState}`);
   }
 };

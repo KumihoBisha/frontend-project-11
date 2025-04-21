@@ -12,14 +12,16 @@ const launchUpdatingRss = (state) => {
     setTimeout(() => {
       state.channels.forEach((channel) => {
         newPromiseChain = newPromiseChain.then(() => getRss(channel.url)
-          .then((response) => parseRss(response))
-          .then((rss) => rss.items.forEach((newItem) => {
-            if (!state.items.some((currItem) => currItem.guid === newItem.guid)) {
-              const item = newItem;
-              item.channelUrl = channel.url;
-              state.items.push(item);
-            }
-          }))
+          .then((response) => {
+            const rss = parseRss(response);
+            rss.items.forEach((newItem) => {
+              if (!state.items.some((currItem) => currItem.guid === newItem.guid)) {
+                const item = newItem;
+                item.channelUrl = channel.url;
+                state.items.push(item);
+              }
+            });
+          })
           .catch((e) => console.error(e)));
       });
 
@@ -32,16 +34,10 @@ const launchUpdatingRss = (state) => {
 
 const app = () => {
   const initialState = {
-    isLoading: false,
-    isError: false,
+    processState: 'filling', // Состояния: 'filling', 'loading', 'failed', 'success'
     formMessage: '',
     channels: [],
     items: [],
-  };
-
-  const selectors = {
-    formId: 'add_rss_form',
-    newsBlockId: 'news',
   };
 
   i18next.init({
@@ -52,7 +48,7 @@ const app = () => {
       },
     },
   }).then(() => {
-    const { form, state } = view(initialState, selectors);
+    const { form, state } = view(initialState);
 
     const validation = getValidation(state);
     launchUpdatingRss(state);
@@ -61,7 +57,7 @@ const app = () => {
       event.preventDefault();
 
       const inputField = event.target[0];
-      state.isLoading = true;
+      state.processState = 'loading';
 
       validation.validate({ link: inputField.value })
         .then((result) => getRss(result.link)
@@ -78,25 +74,19 @@ const app = () => {
 
               state.channels.push(channel);
               state.items.push(...eslintItems.reverse());
+              state.processState = 'success';
+              state.formMessage = 'success';
+              inputField.value = '';
             } catch (e) {
               console.error(e);
-              throw new Error('error.no_valid_rss');
+              state.processState = 'failed';
+              state.formMessage = 'error.no_valid_rss';
             }
           }))
-        .then(() => {
-          state.formMessage = 'success';
-          state.isError = false;
-          inputField.value = '';
-        })
         .catch((error) => {
+          state.processState = 'failed';
           state.formMessage = error.message;
-          state.isError = true;
-        })
-        .finally(() => {
-          state.isLoading = false;
         });
-
-      return false;
     });
   });
 };
