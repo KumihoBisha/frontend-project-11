@@ -1,9 +1,11 @@
 import i18next from 'i18next';
+import onChange from 'on-change';
 import ru from './lang/ru.js';
 import getRss from './api.js';
 import view from './view/index.js';
 import parseRss from './parse.js';
 import getValidation from './validation.js';
+import { renderModalContent } from './view/newsBlockView.js';
 
 const launchUpdatingRss = (state) => {
   const updateAfterDelay = (promiseChain) => {
@@ -32,9 +34,37 @@ const launchUpdatingRss = (state) => {
   updateAfterDelay(Promise.resolve());
 };
 
+const setupModalHandlers = (state) => {
+  const visitedItemsState = onChange({}, (path, value) => {
+    const itemElement = document.getElementById(path);
+    if (!itemElement) return;
+
+    const itemLinkElement = itemElement.getElementsByTagName('a')[0];
+    if (itemLinkElement) {
+      if (value) {
+        itemLinkElement.classList.remove('fw-bold');
+        itemLinkElement.classList.add('fw-normal');
+      }
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('button[data-bs-toggle="modal"]')) {
+      const button = e.target.closest('button');
+      const { itemId } = button.dataset;
+      const item = state.items.find((i) => i.id === itemId);
+
+      if (item) {
+        visitedItemsState[item.id] = true;
+        renderModalContent(item);
+      }
+    }
+  });
+};
+
 const app = () => {
   const initialState = {
-    processState: 'filling', // Состояния: 'filling', 'loading', 'failed', 'success'
+    processState: 'filling',
     formMessage: '',
     channels: [],
     items: [],
@@ -52,6 +82,7 @@ const app = () => {
 
     const validation = getValidation(state);
     launchUpdatingRss(state);
+    setupModalHandlers(state);
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();

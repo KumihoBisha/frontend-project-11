@@ -1,15 +1,4 @@
 import i18next from 'i18next';
-import onChange from 'on-change';
-
-const visitedItemsState = onChange({}, (path, value) => {
-  const itemElement = document.getElementById(path);
-  const itemLinkElement = itemElement.getElementsByTagName('a')[0];
-
-  if (value) {
-    itemLinkElement.classList.remove('fw-bold');
-    itemLinkElement.classList.add('fw-normal');
-  }
-});
 
 const createChannelElement = (id, title, description) => {
   const channelElement = document.createElement('div');
@@ -37,7 +26,7 @@ const createChannelElement = (id, title, description) => {
   return channelElement;
 };
 
-export const updateModal = (item) => {
+export const renderModalContent = (item) => {
   const rssModalHeaderElement = document.getElementById('rssItemModalLabel');
   rssModalHeaderElement.textContent = item.title;
 
@@ -68,10 +57,7 @@ const createFeedItemElement = (item) => {
   previewButton.textContent = i18next.t('label.preview_button');
   previewButton.setAttribute('data-bs-toggle', 'modal');
   previewButton.setAttribute('data-bs-target', '#rssItemModal');
-  previewButton.addEventListener('click', () => {
-    visitedItemsState[item.id] = true;
-    updateModal(item);
-  });
+  previewButton.dataset.itemId = item.id;
 
   const itemLinkContainer = document.createElement('div');
   itemLinkContainer.classList.add('item-link-container');
