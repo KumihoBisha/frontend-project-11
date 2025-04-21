@@ -16,26 +16,36 @@ const createChannelElement = (id, title, description) => {
   channelElement.id = id;
   channelElement.classList.add('container', 'py-4', 'px-3', 'mx-auto');
 
-  channelElement.innerHTML = `
-     <div class="row">
-       <h4>${title}</h4>
-       <p class="fw-light fst-italic">${description}</p>
-       <div class="items"></div>
-     </div>
-   `;
+  const rowDiv = document.createElement('div');
+  rowDiv.classList.add('row');
+
+  const h4 = document.createElement('h4');
+  h4.textContent = title;
+
+  const descriptionP = document.createElement('p');
+  descriptionP.classList.add('fw-light', 'fst-italic');
+  descriptionP.textContent = description;
+
+  const itemsDiv = document.createElement('div');
+  itemsDiv.classList.add('items');
+
+  rowDiv.appendChild(h4);
+  rowDiv.appendChild(descriptionP);
+  rowDiv.appendChild(itemsDiv);
+  channelElement.appendChild(rowDiv);
 
   return channelElement;
 };
 
 export const updateModal = (item) => {
   const rssModalHeaderElement = document.getElementById('rssItemModalLabel');
-  rssModalHeaderElement.innerText = item.title;
+  rssModalHeaderElement.textContent = item.title;
 
   const rssModalItemContent = document.getElementById('rssItemModalContent');
-  rssModalItemContent.innerText = item.description;
+  rssModalItemContent.textContent = item.description;
 
   const rssModalItemOpenButton = document.getElementById('rssModalItemOpenButton');
-  rssModalItemOpenButton.innerText = i18next.t('label.open_full');
+  rssModalItemOpenButton.textContent = i18next.t('label.open_full');
   rssModalItemOpenButton.target = '_blank';
   rssModalItemOpenButton.rel = 'noopener noreferrer';
   rssModalItemOpenButton.href = item.link;
@@ -48,14 +58,14 @@ const createFeedItemElement = (item) => {
 
   const itemLinkElement = document.createElement('a');
   itemLinkElement.href = item.link;
-  itemLinkElement.innerText = item.title;
+  itemLinkElement.textContent = item.title;
   itemLinkElement.target = '_blank';
   itemLinkElement.rel = 'noopener noreferrer';
   itemLinkElement.classList.add('fw-bold');
 
   const previewButton = document.createElement('button');
   previewButton.classList.add('btn', 'btn-outline-primary');
-  previewButton.innerText = i18next.t('label.preview_button');
+  previewButton.textContent = i18next.t('label.preview_button');
   previewButton.setAttribute('data-bs-toggle', 'modal');
   previewButton.setAttribute('data-bs-target', '#rssItemModal');
   previewButton.addEventListener('click', () => {
