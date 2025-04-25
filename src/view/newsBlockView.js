@@ -52,7 +52,6 @@ const createFeedItemElement = (item) => {
   itemLinkElement.textContent = item.title
   itemLinkElement.target = '_blank'
   itemLinkElement.rel = 'noopener noreferrer'
-  itemLinkElement.classList.add('rss-link')
   const isVisited = window.appState?.visitedItems?.[item.id]
   itemLinkElement.classList.add(isVisited ? 'fw-normal' : 'fw-bold')
 
