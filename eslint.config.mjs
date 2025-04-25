@@ -5,13 +5,32 @@ import stylistic from '@stylistic/eslint-plugin'
 
 export default defineConfig([
   stylistic.configs.recommended,
-  { files: ["**/*.{js,mjs,cjs}"], plugins: { js }, extends: ["js/recommended"] },
-  { files: ["**/*.js"], languageOptions: { sourceType: "module" } },
-  { files: ["**/*.{js,mjs,cjs}"], languageOptions: { globals: globals.browser } },
-  { ignores: [
-    '**/node_modules/**',
-    'dist/**',
-    'webpack.config.js',
-    'eslint.config.mjs'
-  ],},
+  {
+    files: ["**/*.{js,mjs,cjs}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+  },
+  {
+    files: ["**/*.js"],
+    languageOptions: { sourceType: "module" },
+  },
+  {
+    files: ["src/**/*.js"],
+    languageOptions: { globals: globals.browser },
+  },
+  {
+    files: ["**/webpack.config.js"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
+    ignores: [
+      '**/node_modules/**',
+      'dist/**',
+      'eslint.config.mjs',
+    ],
+  },
 ]);
