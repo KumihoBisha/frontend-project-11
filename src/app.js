@@ -5,7 +5,6 @@ import getRss from './api.js'
 import view from './view/index.js'
 import parseRss from './parse.js'
 import getValidation from './validation.js'
-import { renderModalContent } from './view/newsBlockView.js'
 
 const launchUpdatingRss = (state) => {
   const updateFeeds = () => {
@@ -55,7 +54,7 @@ const setupModalHandlers = (state) => {
 
       if (item) {
         visitedItemsState[item.id] = true
-        renderModalContent(item)
+        state.modalItem = item
       }
     }
   })
@@ -67,6 +66,7 @@ const app = () => {
     error: null,
     channels: [],
     items: [],
+    modalItem: null,
   }
 
   i18next.init({

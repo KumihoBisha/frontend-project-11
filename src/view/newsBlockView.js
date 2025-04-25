@@ -27,6 +27,8 @@ const createChannelElement = (id, title, description) => {
 }
 
 export const renderModalContent = (item) => {
+  if (!item) return
+
   const rssModalHeaderElement = document.getElementById('rssItemModalLabel')
   rssModalHeaderElement.textContent = item.title
 
