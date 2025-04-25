@@ -26,6 +26,7 @@ export const updateProcessState = (form, processState) => {
       break
     case 'success':
       messageElement.classList.add('text-success')
+      messageElement.innerText = i18next.t('success')
       break
     case 'filling':
       break

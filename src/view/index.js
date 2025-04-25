@@ -16,7 +16,7 @@ export default (initialState) => {
       case 'processState':
         updateProcessState(form, value)
         break
-      case 'formMessage':
+      case 'error':
         updateFormMessage(form, value)
         break
       case 'channels':

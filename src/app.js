@@ -64,7 +64,7 @@ const setupModalHandlers = (state) => {
 const app = () => {
   const initialState = {
     processState: 'filling',
-    formMessage: '',
+    error: null,
     channels: [],
     items: [],
   }
@@ -88,35 +88,34 @@ const app = () => {
 
       const inputField = event.target[0]
       state.processState = 'loading'
+      state.error = null
 
       validation.validate({ link: inputField.value })
-        .then(result => getRss(result.link)
-          .then((rawRss) => {
-            try {
-              const { channel, items } = parseRss(rawRss)
+        .then(result => getRss(result.link))
+        .then((rawRss) => {
+          try {
+            const { channel, items } = parseRss(rawRss)
 
-              channel.url = result.link
-              const eslintItems = items.map((item) => {
-                const eslintItem = item
-                eslintItem.channelUrl = channel.url
-                return eslintItem
-              })
+            channel.url = inputField.value
+            const updatedItems = items.map(item => ({
+              ...item,
+              channelUrl: channel.url,
+            }))
 
-              state.channels.push(channel)
-              state.items.push(...eslintItems.reverse())
-              state.processState = 'success'
-              state.formMessage = 'success'
-              inputField.value = ''
-            }
-            catch (e) {
-              console.error(e)
-              state.processState = 'failed'
-              state.formMessage = 'error.no_valid_rss'
-            }
-          }))
+            state.channels.push(channel)
+            state.items.push(...updatedItems.reverse())
+            state.processState = 'success'
+            inputField.value = ''
+          }
+          catch (e) {
+            console.error(e)
+            state.processState = 'failed'
+            state.error = 'error.no_valid_rss'
+          }
+        })
         .catch((error) => {
           state.processState = 'failed'
-          state.formMessage = error.message
+          state.error = error.message
         })
     })
   })
