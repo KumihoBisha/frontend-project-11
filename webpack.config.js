@@ -1,3 +1,4 @@
+/* global process */
 import path from 'path'
 import autoprefixer from 'autoprefixer'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
