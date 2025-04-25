@@ -1,6 +1,6 @@
 import onChange from 'on-change'
 import { updateProcessState, updateFormMessage } from './formView.js'
-import { updateFeedItems, updateRssChannels, renderModalContent } from './newsBlockView.js'
+import { updateFeedItems, updateRssChannels, renderModalContent, updateVisitedItems } from './newsBlockView.js'
 
 const selectors = {
   formId: 'add_rss_form',
@@ -28,8 +28,11 @@ export default (initialState) => {
       case 'modalItem':
         renderModalContent(value)
         break
+      case 'visitedItems':
+        updateVisitedItems(state, value)
+        break
       default:
-        throw new Error(`Unknown state path ${path}`)
+        break
     }
   })
 

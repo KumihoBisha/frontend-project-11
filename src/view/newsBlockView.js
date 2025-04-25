@@ -52,7 +52,9 @@ const createFeedItemElement = (item) => {
   itemLinkElement.textContent = item.title
   itemLinkElement.target = '_blank'
   itemLinkElement.rel = 'noopener noreferrer'
-  itemLinkElement.classList.add('fw-bold')
+  itemLinkElement.classList.add('rss-link')
+  const isVisited = window.appState?.visitedItems?.[item.id]
+  itemLinkElement.classList.add(isVisited ? 'fw-normal' : 'fw-bold')
 
   const previewButton = document.createElement('button')
   previewButton.classList.add('btn', 'btn-outline-primary')
@@ -72,11 +74,18 @@ const createFeedItemElement = (item) => {
   return itemElement
 }
 
-export const updateFeedItems = (channelItems) => {
-  channelItems.forEach((item) => {
+export const updateFeedItems = (items) => {
+  items.forEach((item) => {
     if (!document.getElementById(item.id)) {
       const channelElement = document.getElementById(item.channelUrl)
+      if (!channelElement) return
+
       const itemElement = createFeedItemElement(item)
+
+      if (window.appState?.visitedItems?.[item.id]) {
+        const link = itemElement.querySelector('a')
+        link.classList.replace('fw-bold', 'fw-normal')
+      }
 
       channelElement.querySelector('.items').prepend(itemElement)
     }
@@ -89,6 +98,22 @@ export const updateRssChannels = (newsBlock, channels) => {
     if (!channelElement) {
       channelElement = createChannelElement(channel.url, channel.title, channel.description)
       newsBlock.appendChild(channelElement)
+    }
+  })
+}
+
+export const updateVisitedItems = (state, value) => {
+  const changedIds = typeof value === 'object' ? Object.keys(value) : [value.split('.')[1]]
+
+  changedIds.forEach((itemId) => {
+    const itemElement = document.getElementById(itemId)
+    if (itemElement) {
+      const link = itemElement.querySelector('a')
+      if (link) {
+        const isVisited = state.visitedItems[itemId]
+        link.classList.toggle('fw-bold', !isVisited)
+        link.classList.toggle('fw-normal', isVisited)
+      }
     }
   })
 }

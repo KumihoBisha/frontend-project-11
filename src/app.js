@@ -1,5 +1,4 @@
 import i18next from 'i18next'
-import onChange from 'on-change'
 import ru from './lang/ru.js'
 import getRss from './api.js'
 import view from './view/index.js'
@@ -32,34 +31,6 @@ const launchUpdatingRss = (state) => {
   updateFeeds()
 }
 
-const setupModalHandlers = (state) => {
-  const visitedItemsState = onChange({}, (path, value) => {
-    const itemElement = document.getElementById(path)
-    if (!itemElement) return
-
-    const itemLinkElement = itemElement.getElementsByTagName('a')[0]
-    if (itemLinkElement) {
-      if (value) {
-        itemLinkElement.classList.remove('fw-bold')
-        itemLinkElement.classList.add('fw-normal')
-      }
-    }
-  })
-
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('button[data-bs-toggle="modal"]')) {
-      const button = e.target.closest('button')
-      const { itemId } = button.dataset
-      const item = state.items.find(i => i.id === itemId)
-
-      if (item) {
-        visitedItemsState[item.id] = true
-        state.modalItem = item
-      }
-    }
-  })
-}
-
 const app = () => {
   const initialState = {
     processState: 'filling',
@@ -67,6 +38,7 @@ const app = () => {
     channels: [],
     items: [],
     modalItem: null,
+    visitedItems: {},
   }
 
   i18next.init({
@@ -78,10 +50,35 @@ const app = () => {
     },
   }).then(() => {
     const { form, state } = view(initialState)
+    window.appState = state
 
     const validation = getValidation(state)
     launchUpdatingRss(state)
-    setupModalHandlers(state)
+
+    document.addEventListener('click', (e) => {
+      const previewButton = e.target.closest('[data-bs-toggle="modal"]')
+      if (previewButton) {
+        const itemId = previewButton.dataset.itemId
+        state.visitedItems = {
+          ...state.visitedItems,
+          [itemId]: true,
+        }
+        state.modalItem = state.items.find(i => i.id === itemId)
+      }
+
+      const itemLink = e.target.closest('a[target="_blank"]')
+      if (itemLink) {
+        const itemElement = itemLink.closest('.item')
+        if (itemElement) {
+          const itemId = itemElement.id
+          state.visitedItems = {
+            ...state.visitedItems,
+            [itemId]: true,
+          }
+          state.visitedItems = { ...state.visitedItems }
+        }
+      }
+    })
 
     form.addEventListener('submit', (event) => {
       event.preventDefault()
